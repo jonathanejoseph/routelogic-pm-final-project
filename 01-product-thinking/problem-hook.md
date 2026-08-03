@@ -9,7 +9,7 @@
 
 **Path:** _StreamLine Spotlight (B2C) · RouteLogic Velocity (B2B) · my own initiative_
 
-_One line on why you picked it._
+RouteLogic Velocity - I work in B2B and felt it was most applicable to my career.
 
 ## 2. The strategic crisis
 
