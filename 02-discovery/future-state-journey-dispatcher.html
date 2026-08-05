@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Future-State Journey — Fleet Dispatcher Reassignment</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    max-width: 860px;
+    margin: 40px auto;
+    padding: 0 24px;
+    color: #2c2c2a;
+    line-height: 1.6;
+    background: #fdfcfa;
+  }
+  h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+  h2 { font-size: 19px; font-weight: 600; margin-top: 40px; border-bottom: 2px solid #eee; padding-bottom: 6px; }
+  h3 { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .meta { background: #f4f2ec; border-radius: 10px; padding: 18px 22px; margin: 20px 0; font-size: 14px; }
+  .meta p { margin: 6px 0; }
+  .meta strong { color: #1a1a18; }
+  blockquote {
+    border-left: 3px solid #b4b2a9; margin: 10px 0; padding: 4px 16px;
+    color: #5f5e5a; font-style: italic; font-size: 14px;
+  }
+  .stages { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+  .stage {
+    border: 1px solid #e2e0d8; border-radius: 12px; padding: 18px 22px;
+    background: #ffffff;
+  }
+  .stage-num {
+    display: inline-block; background: #534AB7; color: #fff;
+    border-radius: 50%; width: 26px; height: 26px; text-align: center;
+    line-height: 26px; font-size: 13px; font-weight: 600; margin-right: 10px;
+  }
+  .stage-title { font-size: 17px; font-weight: 600; display: inline-block; vertical-align: middle; }
+  .stage-grid { display: grid; grid-template-columns: 140px 1fr; gap: 6px 14px; margin-top: 12px; font-size: 14px; }
+  .stage-grid .label { font-weight: 600; color: #5f5e5a; }
+  .arrow { text-align: center; color: #b4b2a9; font-size: 20px; margin: -6px 0; }
+  ol.advantages { padding-left: 20px; }
+  ol.advantages li { margin-bottom: 8px; }
+  .footer-note { margin-top: 40px; font-size: 12px; color: #888780; }
+</style>
+</head>
+<body>
+
+<h1>Future-State Journey — Fleet Dispatcher Reassignment</h1>
+
+<div class="meta">
+  <p><strong>Persona:</strong> Fleet Dispatcher (reassignment scenario)</p>
+  <p><strong>Goal:</strong> Get a reassigned route in front of the right driver fast enough that they act on it before continuing down the wrong path.</p>
+  <p><strong>Current-state friction:</strong></p>
+  <blockquote>"I reassign a route and the driver doesn't see it for ten, fifteen minutes. By then they've driven the wrong way. We keep a WhatsApp group as the real system."<br>(UXR-02, corroborated by BUG-2044 — no push notification on route change)</blockquote>
+  <p><strong>Strategy:</strong> Reclaim operational simplicity by stripping away legacy noise and ensuring the tool is the fastest for everyday work.</p>
+  <p><strong>Value Prop:</strong> For frontline coordinators making time-critical routing calls, we will collapse the everyday, high-stakes actions into their fastest possible path, because the next renewal won't be decided by the buyer who saw the feature list — it'll be decided by the coordinator who already gave up on the tool.</p>
+</div>
+
+<h2>4-Stage Journey</h2>
+
+<div class="stages">
+
+  <div class="stage">
+    <span class="stage-num">1</span><span class="stage-title">Reassign</span>
+    <div class="stage-grid">
+      <div class="label">User Action</div><div>Dispatcher taps reassign once → route change fires immediately, no double-entry needed.</div>
+      <div class="label">Internal State</div><div>Confident — trusts the single action is sufficient, not just the first step.</div>
+      <div class="label">Pain Point Addressed</div><div>Removes need to also open WhatsApp "just in case."</div>
+    </div>
+  </div>
+
+  <div class="arrow">&#8595;</div>
+
+  <div class="stage">
+    <span class="stage-num">2</span><span class="stage-title">Instant push</span>
+    <div class="stage-grid">
+      <div class="label">User Action</div><div>System pushes route to driver device instantly → dispatcher sees live delivery confirmation.</div>
+      <div class="label">Internal State</div><div>Reassured — sees proof the driver was actually reached, not hoping.</div>
+      <div class="label">Pain Point Addressed</div><div>Kills the 8–15 min propagation gap (BUG-2044).</div>
+    </div>
+  </div>
+
+  <div class="arrow">&#8595;</div>
+
+  <div class="stage">
+    <span class="stage-num">3</span><span class="stage-title">Live acknowledgment</span>
+    <div class="stage-grid">
+      <div class="label">User Action</div><div>Driver taps acknowledge → dashboard updates in real time, closing the loop.</div>
+      <div class="label">Internal State</div><div>Trusting — the board now reflects ground truth, not a guess.</div>
+      <div class="label">Pain Point Addressed</div><div>Ends the "I can't trust the board" gap driving manual confirmation.</div>
+    </div>
+  </div>
+
+  <div class="arrow">&#8595;</div>
+
+  <div class="stage">
+    <span class="stage-num">4</span><span class="stage-title">Resolved</span>
+    <div class="stage-grid">
+      <div class="label">User Action</div><div>Dispatcher closes the task inside RouteLogic → never opens a second app.</div>
+      <div class="label">Internal State</div><div>In control — one tool, one truth, full attention back on the road.</div>
+      <div class="label">Pain Point Addressed</div><div>Retires WhatsApp as "the real system" (UXR-02).</div>
+    </div>
+  </div>
+
+</div>
+
+<h2>Competitive Advantages Over the Manual Workaround</h2>
+<ol class="advantages">
+  <li><strong>Speed</strong> — reroute-to-confirmation happens in seconds inside one tool, not minutes across two.</li>
+  <li><strong>Auditability</strong> — every reassignment is logged and searchable, not buried in an unlogged chat thread.</li>
+  <li><strong>Trust</strong> — the dispatcher board reflects real-time ground truth, eliminating manual double-checking entirely.</li>
+</ol>
+
+<p class="footer-note">RouteLogic Velocity — Product Health &amp; Insights synthesis, Scenario B</p>
+
+</body>
+</html>
