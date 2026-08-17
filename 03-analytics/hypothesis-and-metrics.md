@@ -1,34 +1,47 @@
-# Hypothesis & Success Metrics (Module 3)
+# Module 3: Hypothesis & Success Metrics
 
-## Pre-work · Hypothesis check
-- **Role , who you are solving for (from M2):** A dispatcher at a mid-size 3PL who reroutes drivers in real time as conditions change on the road.
-- **Goal , what this user is ultimately trying to achieve:** Get a reassigned route in front of the right driver fast enough that they act on it before continuing down the wrong path.
-- **Friction / moment of misery , the specific pain blocking their goal:** I reassign a route and the driver doesn't see it for ten, fifteen minutes. By then they've driven the wrong way. We keep a WhatsApp group as the real system."
-- **Current workaround , the external tool or manual process they rely on (M2):** WhatsApp (group chat), used as a parallel, unofficial dispatch system running alongside RouteLogic rather than through it.
-- **Problem Hook , your one-sentence framing of the business crisis (M1):** We must solve enterprise churn to leaner, faster rivals by addressing the ten seconds coordinators can't afford to lose navigating RouteLogic during a live, time-critical reroute.
-- **Value Proposition , the outcome your initiative promised to deliver (M1):** For frontline coordinators making time-critical routing calls, we will collapse the everyday, high-stakes actions into their fastest possible path, because the next renewal won't be decided by the buyer who saw the feature list — it'll be decided by the coordinator who already gave up on the tool.
+**Product:** RouteLogic Velocity
+**Builds on:** M2 — Persona (Fleet Dispatcher), Workaround (WhatsApp shadow dispatch), Future-State Journey Map
 
-## Read your data snapshots
-- **Does the funnel data confirm your M2 friction point, or does it tell a different story? Note where the numbers align with the qualitative pain you found and where they diverge.:** _(not filled in)_
-- **Do the retention patterns align with the workaround your M2 persona used to find content? Note what the Mo. 0→1 drop suggests about the onboarding experience your persona described as frustrating.:** _(not filled in)_
-- **Does the LTV gap and the content mix (61% trending for Wanderers) confirm the moment of misery your persona described? Note which segment your persona is in and whether the data confirms their pain.:** _(not filled in)_
-- **Does the low adoption confirm your persona is burdened by tools they don’t use? Note whether the low scheduling adoption (42%) for coordinators matches your M2 moment of misery.:** No it doesn't.
-- **Does the workflow data match the manual process or hack you documented in M2? Note whether the specific drop-offs or time gaps explain why your persona avoids the digital tool.:** Yes it does if they're going into whatsapp to finish the flow
-- **Look at the CSAT heatmap. Which specific cell most directly maps to your persona’s friction? Note how the NPS trend justifies the urgency of your M1 Problem Hook.:** It is not targeting the most critical pain points as core dispatch is green and there are 3 red cells here that may need more attention.
+---
 
-## Step 3 · Craft your hypothesis
-- **Qualitative evidence (from M2) , quote the specific friction / moment of misery for your persona:** I reassign a route and the driver doesn't see it for ten, fifteen minutes. By then they've driven the wrong way. We keep a WhatsApp group as the real system.
-- **Quantitative evidence (from M3) , name the metric or data point that confirms the pain; cite the number:** _(not filled in)_
-- **Persona , role, goal, and the friction you confirmed in the reconciliation steps:** Persona: Fleet Dispatcher (reassignment scenario)
+## Hypothesis
 
-Role: A dispatcher at a mid-size 3PL who reroutes drivers in real time as conditions change on the road. 
+> **If** we replace the dispatch reassignment flow with instant push notification and live driver acknowledgment (collapsing today's 8–15 minute silent gap), **then** dispatchers will stop relying on WhatsApp as the real system for reassignments, **because** the core blocker — not knowing whether the driver has received and seen the change — will be resolved inside RouteLogic itself.
 
-Goal: Get a reassigned route in front of the right driver fast enough that they act on it before continuing down the wrong path. 
+**Grounding evidence:**
+- Friction: *"I reassign a route and the driver doesn't see it for ten, fifteen minutes... We keep a WhatsApp group as the real system."* (UXR-02)
+- Root cause: reassignments take 8–15 min to propagate with no push notification (BUG-2044, Sev: Critical)
+- Behavioral proxy for "workaround abandonment": we cannot directly measure WhatsApp usage (it's outside our product), so we test the underlying cause — propagation and confirmation speed — as the leading indicator that the workaround's reason to exist is going away.
 
-Friction: "I reassign a route and the driver doesn't see it for ten, fifteen minutes. By then they've driven the wrong way. We keep a WhatsApp group as the real system."
-- **Problem you are solving , one sentence describing the specific friction this initiative removes:** _(not filled in)_
-- **Strategic outcome , what behaviour change do you expect, and how does it map to retention / revenue / churn?:** _(not filled in)_
-- **Primary success metric (initiative signal) , the leading indicator that tells you the gap is closing:** _(not filled in)_
-- **Guardrail metric (product signal) , the metric that must NOT drop; it protects your existing base:** _(not filled in)_
-- **Decision window , how much time or data before you scale, pivot, or kill? minimum threshold to proceed?:** _(not filled in)_
-- **Draft your full hypothesis sentence , one to three sentences; quote the metric, name the persona, name the outcome:** _(not filled in)_
+---
+
+## Success Metrics
+
+### Primary Success Metric
+**Reassignment-to-acknowledgment time** — the elapsed time from a dispatcher confirming a reassignment in RouteLogic to the driver acknowledging receipt in-app.
+
+- **Current baseline:** 8–15 minutes, with no confirmation signal at all today (BUG-2044).
+- **Target:** Under 30 seconds for push delivery; under 2 minutes for driver acknowledgment under normal connectivity.
+- **Why this metric:** It's the most direct, instrumentable proxy for the exact moment of misery in UXR-02 — the gap between "I sent it" and "they got it" is precisely what pushes the dispatcher to WhatsApp.
+
+### Guardrail Metric
+**Mis-delivered / failed-stop rate**, tracked before and after rollout.
+
+- **Why this guardrail:** Speeding up reassignment delivery must not come at the cost of accuracy — e.g., drivers acting on notifications too hastily, or duplicate/conflicting reassignments landing in quick succession. If this metric moves in the wrong direction, the fix is net-negative even if propagation time improves.
+
+### Secondary / Diagnostic Metrics (supporting, not primary)
+- **Push notification delivery success rate** (technical health of the fix itself — distinct from user-facing acknowledgment time)
+- **% of reassignments with no acknowledgment within 5 minutes** (surfaces edge cases — poor connectivity, device issues — that the primary metric alone could mask)
+- **Qualitative signal:** follow-up UXR check-in with dispatchers (e.g., re-interview UXR-02's persona type) on whether WhatsApp is still used as a backup — since workaround abandonment itself isn't directly instrumentable in-app.
+
+---
+
+## What This Hypothesis Does Not Claim
+
+- It does not claim WhatsApp usage will disappear entirely — habits and trust take longer to shift than propagation time. The metric tests the *mechanism* (speed + confirmation), not the *behavior change* directly, which is why the qualitative check-in is included as a secondary signal.
+- It does not address the second half of the M2 sync problem — driver-to-dispatcher status lag (BUG-2072, UXR-09). That is a distinct hypothesis and out of scope here; flagged for a future test, not folded in to avoid diluting this one.
+
+---
+
+*Source data: RouteLogic Velocity UXR-02, BUG-2044; hypothesis builds directly on M2 persona and journey map.*
